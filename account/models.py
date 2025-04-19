@@ -46,3 +46,41 @@ class OTP(models.Model):
 
     def __str__(self):
         return str(self.user.email) + " | " + str(self.created_at)
+
+
+GENDER_CHOICES = (
+    ('M', 'Male'),
+    ('F', 'Female'),
+    ('O', 'Other'),
+)
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile')
+
+    full_name = models.CharField(max_length=150)
+    date_of_birth = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
+
+    phone = models.CharField(max_length=15)
+
+    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+
+    # Address fields
+    house_name = models.CharField(max_length=100)
+    landmark = models.CharField(max_length=100, blank=True)
+    address = models.TextField()
+    district = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    pin_code = models.CharField(max_length=10)
+
+    # Proof fields
+    address_proof_type = models.CharField(max_length=100)
+    address_proof_number = models.CharField(max_length=100)
+    address_proof_document = models.FileField(upload_to='address_proofs/', null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Profile of {self.user.email}"

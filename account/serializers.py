@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from account.models import OTP
+from account.models import OTP, Profile
 from config import settings
 
 User = get_user_model()
@@ -66,3 +66,10 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             raise serializers.ValidationError('Your email is not verified.')
 
         return data
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = '__all__'
+        read_only_fields = ['user', 'created_at', 'updated_at']

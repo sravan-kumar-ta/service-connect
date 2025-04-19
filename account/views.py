@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from account.serializers import RegisterSerializer, OTPVerifySerializer, CustomTokenObtainPairSerializer
+from account.models import Profile
+from account.serializers import RegisterSerializer, OTPVerifySerializer, CustomTokenObtainPairSerializer, \
+    ProfileSerializer
 
 User = get_user_model()
 
@@ -28,3 +30,12 @@ class OTPVerifyView(APIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+
+class ProfileCreateUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        profile, created = Profile.objects.get_or_create(user=self.request.user)
+        return profile
